@@ -1,5 +1,5 @@
 COMPOSICAO_COLUMNS = [
-    "ID Composição",
+    "Comp.",
     "DDD",
     "Qtde.",
     "Negociação",
@@ -15,3 +15,16 @@ COMPOSICAO_COLUMNS = [
 ]
 
 TERMO_COLUMNS = ["Nº", "Comp.", "DDD", "Nº da Linha"]
+
+
+INDEX_COLUMNS = [
+    "Nº",
+    "Comp.",
+    "Negociação",
+    "DDD_x",
+    "Telefone",
+    "Plano e Vlr. Unit.",
+    "M",
+    "Recomendação",
+    "Recomendação UP",
+]

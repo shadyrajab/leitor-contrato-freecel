@@ -1,7 +1,23 @@
+import re
+
 import pandas as pd
 
 from utils.functions import remove_rbar
 from utils.variables import COMPOSICAO_COLUMNS, TERMO_COLUMNS
+
+
+def handler_faturamento(dataframe: pd.DataFrame):
+    df = dataframe[["Unnamed: 0", "Fat. Simulação\rigo GrupoSe"]]
+    df.columns = ["Fat Atual", "Fat Simulação"]
+    regex = r"R\$\s*(?:(?:\d{1,3}(?:,\d{3})*|\d+)(?:,\d{2})|\d{1,3}(?:,\d{3})*\.\d{2})"
+
+    for column in df.columns:
+        df.loc[:, column] = df[column].apply(
+            lambda x: re.search(regex, x).group(0).replace("R$ ", "").replace(",", ".")
+        )
+
+    df.loc[:, "delta"] = df["Fat Simulação"].astype(float) - df["Fat Atual"].astype(float)
+    df.to_excel("output/simulação.xlsx", index=False)
 
 
 def handler_visao(dataframe: pd.DataFrame):
@@ -20,6 +36,7 @@ def handler_termo(extracted_text: str):
         sublistas.append(sublista)
 
     dataframe = pd.DataFrame(sublistas, columns=TERMO_COLUMNS)
+    dataframe["Comp."] = dataframe["Comp."].str.replace("000000", "")
     dataframe.to_excel("output/termo complementar.xlsx", index=False)
 
 
