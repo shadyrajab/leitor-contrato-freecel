@@ -1,22 +1,16 @@
 from PyPDF2 import PdfReader
 
 import tabula
-from handler.handler_dataframe import handler_composicao, handler_termo
+from handler.handler_dataframe import handler_composicao, handler_termo, handler_visao
+from utils.functions import found_page
 
-reader = PdfReader("contrato.pdf")
-for i, page in enumerate(reader.pages):
-    if (
-        "7\n.\nAnexo II\nTermo Complementar \nRelação de Terminais da Negociação"
-        in page.extract_text()
-    ):
-        termo_complementar = page.extract_text()
-
-    if ("\nUnit.\nServiço Vlr. Unit.\n") in page.extract_text():
-        composicao_page = i + 1
+reader = PdfReader("input/contrato.pdf")
+termo, found_page = found_page(reader)
 
 
-composicao = tabula.read_pdf("contrato.pdf", pages=composicao_page, lattice=True)[0]
-
+composicao = tabula.read_pdf("input/contrato.pdf", pages=found_page, lattice=True)[0]
+visao = tabula.read_pdf("input/visão.pdf", pages="2")[0]
 
 handler_composicao(composicao)
-handler_termo(termo_complementar)
+handler_termo(termo)
+handler_visao(visao)
